@@ -1,0 +1,15 @@
+<%- include('partials/header') %>
+
+    <h1>Leaderboards</h1>
+    <% if (leaderboard.length > 0) { %>
+        <ol>
+            <% leaderboard.forEach((score) => { %>
+                <li><%= score %></li>
+            <% }); %>
+        </ol>
+    <% } else { %>
+        <p>No high scores yet. Be the first to set a record!</p>
+    <% } %>
+    <a href="/">Back to Home</a>
+</body>
+</html>

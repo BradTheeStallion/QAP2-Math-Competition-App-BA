@@ -1,8 +1,3 @@
-/**
- * Gets a random multiplication, division, subtraction or addition question
- * 
- * @returns {} The randomly generated math question
- */
 function getQuestion() {
     const num1 = Math.floor(Math.random() * 10);
     const num2 = Math.floor(Math.random() * 10);
@@ -27,20 +22,13 @@ function getQuestion() {
             break;
         case '/':
             question = `${num1} / ${num2}`;
-            answer = num2 === 0 ? 'undefined' : (num1 / num2).toFixed(2);
+            answer = num2 === 0 ? 'undefined' : parseFloat((num1 / num2).toFixed(2));
             break;
     }
 
     return { question, answer };
 }
 
-/**
- * Parses the provided question and gets whether or not the provided answer is correct
- * 
- * @param {*} question The question being answered
- * @param {*} answer The potential answer
- * @returns {boolean} True if the answer was correct, false otherwise.
- */
 function isCorrectAnswer(question, answer) {
     const parts = question.split(' ');
     const num1 = parseInt(parts[0]);
@@ -59,7 +47,7 @@ function isCorrectAnswer(question, answer) {
             correctAnswer = num1 * num2;
             break;
         case '/':
-            correctAnswer = num2 === 0 ? 'undefined' : (num1 / num2).toFixed(2);
+            correctAnswer = num2 === 0 ? 'undefined' : parseFloat((num1 / num2).toFixed(2));
             break;
     }
 
