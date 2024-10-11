@@ -1,3 +1,7 @@
+//Brad Ayers
+//QAP2
+//October 11, 2024
+
 const { isCorrectAnswer, getQuestion } = require("../../utils/mathUtilities");
 
 describe("Tests for getQuestion", () => {
