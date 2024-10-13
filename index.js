@@ -26,23 +26,20 @@ app.post('/quiz', (req, res) => {
 
     if (isCorrectAnswer(currentQuestion.question, userAnswer)) {
         streak++;
-        if (streak > Math.min(...leaderboard, 0)) {
+        res.render('result', { correct: true, streak, question: currentQuestion.question, userAnswer, correctAnswer: currentQuestion.answer });
+    } else {
+        if (streak > 0) {
             leaderboard.push(streak);
             leaderboard.sort((a, b) => b - a);
             leaderboard = leaderboard.slice(0, 10);
         }
-        res.redirect('/quiz');
-    } else {
-        leaderboard.push(streak);
-        leaderboard.sort((a, b) => b - a);
-        leaderboard = leaderboard.slice(0, 10);
+        res.render('result', { correct: false, streak, question: currentQuestion.question, userAnswer, correctAnswer: currentQuestion.answer });
         streak = 0;
-        res.redirect('/');
     }
 });
 
-app.get('/leaderboards', (req, res) => {
-    res.render('leaderboards', { leaderboard });
+app.get('/leaderboard', (req, res) => {
+    res.render('leaderboard', { leaderboard });
 });
 
 app.listen(port, () => {

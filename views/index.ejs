@@ -1,17 +1,11 @@
 <%- include('partials/header') %>
-    <main class="main-content index_container">
-        <h1>Welcome to the Math Competition App</h1>
-        <% if (streak > 0) { %>
-            <p>Your current streak: <%= streak %></p>
-        <% } %>
-        <div class="navigation__container">
-            <a href="/leaderboards">
-                View Leaderboards
-            </a>
-            <a href="/quiz">
-                Start Quiz
-            </a>
-        </div>
-    </main>
-</body>
-</html>
+<main class="main-content index_container">
+    <h1>Welcome to the Math Competition App</h1>
+    <% if (streak > 0) { %>
+        <p class="streak">Your current streak: <%= streak %></p>
+    <% } %>
+    <div class="navigation__container">
+        <a href="/leaderboard" class="btn">View Leaderboard</a>
+        <a href="/quiz" class="btn">Start Quiz</a>
+    </div>
+</main>
