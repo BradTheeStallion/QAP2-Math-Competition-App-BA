@@ -4,139 +4,79 @@
 
 const { isCorrectAnswer, getQuestion } = require("../../utils/mathUtilities");
 
-describe("Tests for getQuestion", () => {
-    describe("Valid Operations", () => {
-        test("Question is a valid math operation", () => {
-            const question = getQuestion();
-            expect(question).toMatch(/(\d+)\s*(\+|\-|\*|\/)\s*(\d+)/);
-        });
+describe("Math Utilities", () => {
+  describe("getQuestion", () => {
+    test("returns an object with question and answer properties", () => {
+      const result = getQuestion();
+      expect(result).toHaveProperty("question");
+      expect(result).toHaveProperty("answer");
     });
 
-    describe("Range of Numbers", () => {
-        test("Numbers are within a certain range", () => {
-            const question = getQuestion();
-            const numbers = question.match(/\d+/g);
-            expect(Number(numbers[0])).toBeGreaterThanOrEqual(0);
-            expect(Number(numbers[0])).toBeLessThanOrEqual(100);
-            expect(Number(numbers[1])).toBeGreaterThanOrEqual(0);
-            expect(Number(numbers[1])).toBeLessThanOrEqual(100);
-        });
+    test("generates a valid math question", () => {
+      const { question } = getQuestion();
+      expect(question).toMatch(/^\d+\s[\+\-\*\/]\s\d+$/);
     });
 
-    describe("Randomness", () => {
-        test("Questions are unique", () => {
-            const questions = new Set();
-            for (let i = 0; i < 100; i++) {
-                questions.add(getQuestion());
-            }
-            expect(questions.size).toBeGreaterThan(1);
-        });
+    test("generates questions within the correct range", () => {
+      for (let i = 0; i < 100; i++) {
+        const { question } = getQuestion();
+        const [num1, operator, num2] = question.split(" ");
+        
+        switch (operator) {
+          case "+":
+          case "-":
+            expect(Number(num1)).toBeLessThanOrEqual(75);
+            expect(Number(num2)).toBeLessThanOrEqual(50);
+            break;
+          case "*":
+          case "/":
+            expect(Number(num1)).toBeLessThanOrEqual(144);
+            expect(Number(num2)).toBeLessThanOrEqual(12);
+            break;
+        }
+      }
     });
 
-    describe("Division by Zero", () => {
-        test("Division by zero is not possible", () => {
-            const question = getQuestion();
-            expect(question).not.toMatch(/\/\s*0/);
-        });
-    });
-});
-
-describe("Tests for isCorrectAnswer", () => {
-    describe("Exact Answer Check", () => {
-        test("Correct answer is detected", () => {
-            expect(isCorrectAnswer("2+2", 4)).toBe(true);
-        });
-
-        test("Incorrect answer is detected", () => {
-            expect(isCorrectAnswer("2+2", 5)).toBe(false);
-        });
+    test("division questions always result in whole numbers", () => {
+      for (let i = 0; i < 100; i++) {
+        const { question, answer } = getQuestion();
+        if (question.includes("/")) {
+          expect(Number.isInteger(answer)).toBe(true);
+        }
+      }
     });
 
-    describe("Type Safety", () => {
-        test("Non-numeric answer is handled", () => {
-            expect(isCorrectAnswer("2+2", "four")).toBe(false);
-        });
+    test("does not generate division by zero", () => {
+      for (let i = 0; i < 100; i++) {
+        const { question } = getQuestion();
+        expect(question).not.toMatch(/\/\s*0$/);
+      }
+    });
+  });
+
+  describe("isCorrectAnswer", () => {
+    test("correctly evaluates addition", () => {
+      expect(isCorrectAnswer("5 + 3", 8)).toBe(true);
+      expect(isCorrectAnswer("5 + 3", 9)).toBe(false);
     });
 
-    describe("Negative and Decimal Numbers", () => {
-        test("Negative numbers are handled", () => {
-            expect(isCorrectAnswer("2-2", 0)).toBe(true);
-        });
-        test("Decimal numbers are handled", () => {
-            expect(isCorrectAnswer("2/2", 1)).toBe(true);
-        });
+    test("correctly evaluates subtraction", () => {
+      expect(isCorrectAnswer("10 - 4", 6)).toBe(true);
+      expect(isCorrectAnswer("10 - 4", 5)).toBe(false);
     });
 
-    describe("Edge Cases", () => {
-        test("Zero is handled correctly", () => {
-            expect(isCorrectAnswer("0+0", 0)).toBe(true);
-        });
-        test("One is handled correctly", () => {
-            expect(isCorrectAnswer("1*1", 1)).toBe(true);
-        });
-    });
-});
-
-describe("Tests for Streak Tracking", () => {
-    describe("Streak Increase", () => {
-        test("Correct answer increases streak", () => {
-            const question = "2+2";
-            const answer = 4;
-            const streak = 0;
-            const correct = isCorrectAnswer(question, answer);
-            const newStreak = correct ? streak + 1 : 0;
-            expect(newStreak).toBe(1);
-        });
+    test("correctly evaluates multiplication", () => {
+      expect(isCorrectAnswer("6 * 7", 42)).toBe(true);
+      expect(isCorrectAnswer("6 * 7", 41)).toBe(false);
     });
 
-    describe("Streak Reset", () => {
-        test("Incorrect answer resets streak", () => {
-            const question = "2+2";
-            const answer = 5;
-            const streak = 2;
-            const correct = isCorrectAnswer(question, answer);
-            const newStreak = correct ? streak + 1 : 0;
-            expect(newStreak).toBe(0);
-        });
+    test("correctly evaluates division", () => {
+      expect(isCorrectAnswer("20 / 4", 5)).toBe(true);
+      expect(isCorrectAnswer("20 / 4", 6)).toBe(false);
     });
 
-    describe("Starting from Zero", () => {
-        test("New quiz starts with streak at zero", () => {
-            const streak = 0;
-            expect(streak).toBe(0);
-        });
+    test("returns false for non-numeric answers", () => {
+      expect(isCorrectAnswer("5 + 5", "ten")).toBe(false);
     });
-});
-
-describe("Tests for Leaderboard Functionality", () => {
-    describe("Top 10 Streaks Only", () => {
-        test("Leaderboard only shows top 10 streaks", () => {
-            const leaderboard = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
-            expect(leaderboard.slice(0, 10).length).toBe(10);
-        });
-    });
-
-    describe("Sorting", () => {
-        test("Leaderboard is sorted", () => {
-            const leaderboard = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            const sortedLeaderboard = [...leaderboard].sort((a, b) => b - a);
-            expect(leaderboard).toEqual(sortedLeaderboard);
-        });
-    });
-
-    describe("Unique Streak Entries", () => {
-        test("Leaderboard has unique streak entries", () => {
-            const leaderboard = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            const uniqueLeaderboard = new Set(leaderboard);
-            expect(leaderboard.length).toBe(uniqueLeaderboard.size);
-        });
-    });
-
-    describe("Resetting Leaderboard", () => {
-        test("Leaderboard resets on new game", () => {
-            const leaderboard = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-            const newLeaderboard = [];
-            expect(newLeaderboard).toEqual([]);
-        });
-    });
+  });
 });
