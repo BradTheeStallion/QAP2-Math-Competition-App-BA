@@ -1,4 +1,4 @@
-<<<Below is the original readme from the repo cloned from my instructor. I modified the task slightly by attemping a TDD approach.>>>
+***Below is the original readme from the repo cloned from my instructor. I modified the task slightly by attemping a TDD approach.***
 
 
 # Math Competition App
