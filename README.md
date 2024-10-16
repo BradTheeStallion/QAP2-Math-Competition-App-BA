@@ -1,3 +1,6 @@
+<<<Below is the original readme from the repo cloned from my instructor. I modified the task slightly by attemping a TDD approach.>>>
+
+
 # Math Competition App
 
 This is the starting point for the **Math Competition App** assignment. The goal of this project is to create a simple web application where users can practice solving math questions, track their streak of correct answers, and view leaderboards.
