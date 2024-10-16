@@ -1,3 +1,7 @@
+//Bradley Ayers
+//QAP 2
+//October 11-15, 2024
+
 function getQuestion() {
     const operators = ['+', '-', '*', '/'];
     const operator = operators[Math.floor(Math.random() * operators.length)];
@@ -11,7 +15,7 @@ function getQuestion() {
             answer = num1 + num2;
             break;
         case '-':
-            num1 = Math.floor(Math.random() * 50) + 26; // Ensure num1 is always larger
+            num1 = Math.floor(Math.random() * 50) + 26; // Ensure num1 is larger
             num2 = Math.floor(Math.random() * 25) + 1;
             question = `${num1} - ${num2}`;
             answer = num1 - num2;
@@ -24,8 +28,8 @@ function getQuestion() {
             break;
         case '/':
             num2 = Math.floor(Math.random() * 12) + 1; // Divisor (1 to 12)
-            answer = Math.floor(Math.random() * 12) + 1; // Quotient (1 to 12)
-            num1 = num2 * answer; // Ensure division results in a whole number
+            answer = Math.floor(Math.random() * 12) + 2; // Quotient (2 to 12)
+            num1 = num2 * answer; // Ensure integer division result
             question = `${num1} / ${num2}`;
             break;
     }
@@ -35,8 +39,12 @@ function getQuestion() {
 
 function isCorrectAnswer(question, userAnswer) {
     const parts = question.split(' ');
-    const num1 = parseInt(parts[0]);
-    const num2 = parseInt(parts[2]);
+    if (parts.length !== 3) {
+        throw new Error("Invalid question format.");
+    }
+
+    const num1 = parseInt(parts[0], 10);
+    const num2 = parseInt(parts[2], 10);
     const operator = parts[1];
     let correctAnswer;
 
@@ -53,9 +61,11 @@ function isCorrectAnswer(question, userAnswer) {
         case '/':
             correctAnswer = num1 / num2;
             break;
+        default:
+            throw new Error("Unsupported operator.");
     }
 
-    return Math.abs(correctAnswer - userAnswer) < 0.01; // Allow for small floating-point errors
+    return correctAnswer === userAnswer;
 }
 
 module.exports = {

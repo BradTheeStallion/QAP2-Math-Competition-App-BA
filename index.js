@@ -1,3 +1,7 @@
+//Bradley Ayers
+//QAP 2
+//October 11-15, 2024
+
 const express = require('express');
 const app = express();
 const port = 3000;
@@ -24,18 +28,45 @@ app.post('/quiz', (req, res) => {
     const { answer } = req.body;
     const userAnswer = parseFloat(answer);
 
+    if (isNaN(userAnswer)) {
+        return res.render('quiz', {
+            question: currentQuestion.question,
+            streak,
+            error: "Please enter a valid number for the answer."
+        });
+    }
+
     if (isCorrectAnswer(currentQuestion.question, userAnswer)) {
         streak++;
-        res.render('result', { correct: true, streak, question: currentQuestion.question, userAnswer, correctAnswer: currentQuestion.answer });
+        res.render('result', { 
+            correct: true, 
+            streak, 
+            question: currentQuestion.question, 
+            userAnswer, 
+            correctAnswer: currentQuestion.answer 
+        });
     } else {
         if (streak > 0) {
-            leaderboard.push(streak);
-            leaderboard.sort((a, b) => b - a);
+            const dateAchieved = new Date();
+            const formattedDate = dateAchieved.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            leaderboard.push({ score: streak, date: formattedDate });
+            
+            leaderboard.sort((a, b) => b.score - a.score);
             leaderboard = leaderboard.slice(0, 10);
         }
-        res.render('result', { correct: false, streak, question: currentQuestion.question, userAnswer, correctAnswer: currentQuestion.answer });
+
+        res.render('result', { 
+            correct: false, 
+            streak, 
+            question: currentQuestion.question, 
+            userAnswer, 
+            correctAnswer: currentQuestion.answer 
+        });
+        
         streak = 0;
     }
+    
+    currentQuestion = getQuestion();
 });
 
 app.get('/leaderboard', (req, res) => {

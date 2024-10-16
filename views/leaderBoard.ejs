@@ -1,14 +1,17 @@
 <!--Brad Ayers
 QAP2
-October 11-13, 2024 -->
+October 11-15, 2024 -->
 
 <%- include('partials/header') %>
 <main class="main-content leaderboard_container">
     <h1>Leaderboard</h1>
-    <% if (leaderboard.length > 0) { %>
+    <% if (typeof leaderboard !== 'undefined' && leaderboard.length > 0) { %>
         <ol class="leaderboard-list">
-            <% leaderboard.forEach((score, index) => { %>
-                <li><span class="rank"><%= index + 1 %></span><span class="score"><%= score %></span></li>
+            <% leaderboard.forEach((entry, index) => { %>
+                <li>
+                    <span class="score"><%= entry.score %></span>
+                    <span class="date"><%= entry.date %></span>
+                </li>
             <% }); %>
         </ol>
     <% } else { %>
